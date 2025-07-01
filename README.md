@@ -1,3 +1,7 @@
+# Tic-Tac-Toe
+
+A fun and animated Tic-Tac-Toe game built with Next.js and React.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
