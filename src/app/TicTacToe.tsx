@@ -39,39 +39,6 @@ function getAvailableMoves(board: (string | null)[]) {
   return board.map((v, i) => (v === null ? i : null)).filter((v) => v !== null) as number[];
 }
 
-function getRandomMove(board: (string | null)[]) {
-  const moves = getAvailableMoves(board);
-  if (moves.length === 0) return null;
-  const idx = Math.floor(Math.random() * moves.length);
-  return moves[idx];
-}
-
-function findBlockingMove(board: (string | null)[], ai: string, opponent: string) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (const line of lines) {
-    const [a, b, c] = line;
-    const values = [board[a], board[b], board[c]];
-    // If opponent has two and the third is empty, block it
-    if (
-      values.filter((v) => v === opponent).length === 2 &&
-      values.includes(null)
-    ) {
-      const emptyIndex = line[values.indexOf(null)];
-      return emptyIndex;
-    }
-  }
-  return null;
-}
-
 // Minimax algorithm for perfect AI
 function minimax(board: (string | null)[], depth: number, isMaximizing: boolean, ai: string, human: string): { score: number, move: number | null } {
   const winner = calculateWinner(board);
@@ -160,7 +127,7 @@ export default function TicTacToe() {
         }, 500);
       }
     }
-  }, [board, xIsNext, winner, gameStarted, mode]);
+  }, [board, xIsNext, winner, gameStarted, mode, handleClick]);
 
   React.useEffect(() => {
     if (winner) {
@@ -184,7 +151,6 @@ export default function TicTacToe() {
         return newScore;
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [winner, board, gameStarted]);
 
   function handleStart(selectedMode: GameMode) {
