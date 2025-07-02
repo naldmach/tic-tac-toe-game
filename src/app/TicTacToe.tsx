@@ -72,6 +72,46 @@ function findBlockingMove(board: (string | null)[], ai: string, opponent: string
   return null;
 }
 
+// Minimax algorithm for perfect AI
+function minimax(board: (string | null)[], depth: number, isMaximizing: boolean, ai: string, human: string): { score: number, move: number | null } {
+  const winner = calculateWinner(board);
+  if (winner === ai) return { score: 10 - depth, move: null };
+  if (winner === human) return { score: depth - 10, move: null };
+  if (board.every(Boolean)) return { score: 0, move: null }; // Draw
+
+  let bestMove: number | null = null;
+
+  if (isMaximizing) {
+    let bestScore = -Infinity;
+    for (let i = 0; i < board.length; i++) {
+      if (!board[i]) {
+        board[i] = ai;
+        const { score } = minimax(board, depth + 1, false, ai, human);
+        board[i] = null;
+        if (score > bestScore) {
+          bestScore = score;
+          bestMove = i;
+        }
+      }
+    }
+    return { score: bestScore, move: bestMove };
+  } else {
+    let bestScore = Infinity;
+    for (let i = 0; i < board.length; i++) {
+      if (!board[i]) {
+        board[i] = human;
+        const { score } = minimax(board, depth + 1, true, ai, human);
+        board[i] = null;
+        if (score < bestScore) {
+          bestScore = score;
+          bestMove = i;
+        }
+      }
+    }
+    return { score: bestScore, move: bestMove };
+  }
+}
+
 export default function TicTacToe() {
   const [gameStarted, setGameStarted] = useState(false);
   const [mode, setMode] = useState<GameMode | null>(null);
@@ -89,11 +129,12 @@ export default function TicTacToe() {
   React.useEffect(() => {
     if (gameStarted && mode === "AI" && !winner && !xIsNext) {
       // AI is always O, player is X
-      const blockMove = findBlockingMove(board, "O", "X");
-      const aiMove = blockMove !== null ? blockMove : getRandomMove(board);
-      if (aiMove !== null) {
+      const ai = "O";
+      const human = "X";
+      const { move: bestMove } = minimax(board.slice(), 0, true, ai, human);
+      if (bestMove !== null && !board[bestMove]) {
         setTimeout(() => {
-          handleClick(aiMove);
+          handleClick(bestMove);
         }, 500);
       }
     }
