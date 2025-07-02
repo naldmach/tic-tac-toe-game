@@ -131,10 +131,32 @@ export default function TicTacToe() {
       // AI is always O, player is X
       const ai = "O";
       const human = "X";
-      const { move: bestMove } = minimax(board.slice(), 0, true, ai, human);
-      if (bestMove !== null && !board[bestMove]) {
+      // Count how many O's and X's are on the board
+      const xCount = board.filter((v) => v === "X").length;
+      const oCount = board.filter((v) => v === "O").length;
+      let aiMove: number | null = null;
+      // If it's the AI's first move (second move of the game)
+      if (xCount === 1 && oCount === 0) {
+        // Pick center if available
+        if (!board[4]) {
+          aiMove = 4;
+        } else {
+          // Pick a random corner
+          const corners = [0, 2, 6, 8].filter((i) => !board[i]);
+          if (corners.length > 0) {
+            aiMove = corners[Math.floor(Math.random() * corners.length)];
+          }
+        }
+      } else {
+        // Use minimax for all other moves
+        const { move: bestMove } = minimax(board.slice(), 0, true, ai, human);
+        if (bestMove !== null && !board[bestMove]) {
+          aiMove = bestMove;
+        }
+      }
+      if (aiMove !== null && !board[aiMove]) {
         setTimeout(() => {
-          handleClick(bestMove);
+          handleClick(aiMove!);
         }, 500);
       }
     }
