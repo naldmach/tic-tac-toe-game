@@ -35,10 +35,6 @@ function calculateWinner(squares: (string | null)[]) {
   return null;
 }
 
-function getAvailableMoves(board: (string | null)[]) {
-  return board.map((v, i) => (v === null ? i : null)).filter((v) => v !== null) as number[];
-}
-
 // Minimax algorithm for perfect AI
 function minimax(board: (string | null)[], depth: number, isMaximizing: boolean, ai: string, human: string): { score: number, move: number | null } {
   const winner = calculateWinner(board);
@@ -91,6 +87,14 @@ export default function TicTacToe() {
   const [lastResult, setLastResult] = useState<string | null>(null);
   const winner = calculateWinner(board);
   const prevScore = useRef(score);
+
+  const handleClick = React.useCallback((index: number) => {
+    if (board[index] || winner) return;
+    const newBoard = board.slice();
+    newBoard[index] = xIsNext ? "X" : "O";
+    setBoard(newBoard);
+    setXIsNext(!xIsNext);
+  }, [board, xIsNext, winner]);
 
   // AI move effect
   React.useEffect(() => {
@@ -158,14 +162,6 @@ export default function TicTacToe() {
     setGameStarted(true);
     setBoard(emptyBoard);
     setXIsNext(true);
-  }
-
-  function handleClick(index: number) {
-    if (board[index] || winner) return;
-    const newBoard = board.slice();
-    newBoard[index] = xIsNext ? "X" : "O";
-    setBoard(newBoard);
-    setXIsNext(!xIsNext);
   }
 
   function handleReset() {
