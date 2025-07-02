@@ -79,7 +79,6 @@ export default function TicTacToe() {
   const [xIsNext, setXIsNext] = useState(true);
   const [score, setScore] = useState<Score>({ X: 0, O: 0, Draws: 0 });
   const [scoreAnim, setScoreAnim] = useState<{X: boolean, O: boolean, Draws: boolean}>({X: false, O: false, Draws: false});
-  const [statusAnim, setStatusAnim] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [lastResult, setLastResult] = useState<string | null>(null);
@@ -98,7 +97,6 @@ export default function TicTacToe() {
         }, 500);
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [board, xIsNext, winner, gameStarted, mode]);
 
   React.useEffect(() => {
@@ -260,7 +258,7 @@ export default function TicTacToe() {
         </button>
       </div>
       <div className="flex flex-col items-center w-full">
-        <div className={`font-bold text-xl mb-2 transition-all duration-500 ${statusAnim ? "animate-bounceIn" : ""} ${darkMode ? "text-white" : "text-gray-900"}`}>{status}</div>
+        <div className={`font-bold text-xl mb-2 transition-all duration-500 ${darkMode ? "text-white" : "text-gray-900"}`}>{status}</div>
         <div className="grid grid-cols-3 gap-3 mb-4">
           {Array.from({ length: 9 }, (_, i) => renderSquare(i))}
         </div>
